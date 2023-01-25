@@ -1,4 +1,3 @@
-#%%
 from dataclasses import dataclass
 import matplotlib.pyplot as plt
 from colors import *
@@ -15,6 +14,10 @@ class PlotSettings:
         for spine in self.ax.spines.values():
             spine.set_visible(False)
 
+        return self
+
+    def remove_yaxis(self):
+        self.ax.get_yaxis().set_visible(False)
         return self
 
     def set_ticklabel_color(self, color=GRAY1):
@@ -37,4 +40,18 @@ class PlotSettings:
         return self
 
 
-#%%
+@dataclass
+class AnnotateLine:
+    ax: plt.axes
+
+    def annoatate_line(
+        self, indexes, values, x_offset=0, y_offset=0, symbol_character="", color=None
+    ):
+        for index, value in zip(indexes, values):
+            self.ax.annotate(
+                f"{value:.0f}{symbol_character}",
+                xy=(index + x_offset, value + y_offset),
+                color=color,
+            )
+
+        return self
