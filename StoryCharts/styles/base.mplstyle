@@ -1,5 +1,6 @@
-figure.figsize: 8, 4
+figure.figsize: 8, 5
 font.family: "avenir"
+
 
 # ------------ line ----------------------
 lines.linewidth : 4
