@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 import pandas as pd
+from inspect import currentframe
 
 data_path = Path(__file__).parents[1] / "data"
 styles_path = Path(__file__).parent / "styles"
@@ -15,19 +16,26 @@ class StoryChart:
         self.ax.set_ylabel(ylabel, loc="top")
         self.ax.set_title(title, loc="left", pad=15)
 
-    def Line(self, x, y, color="#0c4a6e", **label_kwargs):
+    def _plot(self, x,y, colors = "#0c4a6e", **label_kwargs):
         self.fig, self.ax = plt.subplots()
-        self.ax.plot(x, y, color=color)
+        
+        calling_method_name = currentframe().f_back.f_code.co_name
+        if calling_method_name == "Line":
+            self.ax.plot(x, y, color=colors)
+        elif calling_method_name == "Bar":
+            self.ax.bar(x, y, color=colors)
+            self.ax.tick_params(axis='x', colors="#1f2937")
+        
         self._set_labels(**label_kwargs)
         self.fig.tight_layout()
         plt.show()
 
+
+    def Line(self, x, y, colors="#0c4a6e", **label_kwargs):
+        self._plot(x,y, colors, **label_kwargs)
+
     def Bar(self, x, y, colors="#0c4a6e", **label_kwargs):
-        self.fig, self.ax = plt.subplots()
-        self.ax.bar(x, y, color=colors)
-        self.ax.tick_params(axis='x', colors="#1f2937")
-        self._set_labels(**label_kwargs)
-        plt.show()
+        self._plot(x,y, colors, **label_kwargs)
 
 # manual testing
 if __name__ == "__main__":
@@ -39,7 +47,7 @@ if __name__ == "__main__":
         df["year"],
         df["mean"],
         title=title,
-        color="#e11d48",
+        colors="#e11d48",
         xlabel="YEARS FROM 1959",
         ylabel="CO$_2$ MOLE FRACTON IN PPM",
     )
